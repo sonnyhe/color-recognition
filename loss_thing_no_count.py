@@ -9,27 +9,31 @@ dilate_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
 
 
 # 打开摄像头
-cap = cv2.VideoCapture("/Users/sonny_he/Desktop/toss_video/cut_3.mp4")
+cap = cv2.VideoCapture("rtsp://192.168.9.87:8554/paosa.264")
 success, frame = cap.read()
 
 # 丢弃9帧，让相机有足够时间调整
-for i in range(2):
+'''for i in range(2):
     success, frame = cap.read()
     if not success:
-        exit(1)
+        exit(1)'''
 
 # 取第十帧，并进行模糊操作，作为背景
 # frame_test = ("/Users/sonny_he/Desktop/opencv_learning/test.png")
-frame_test = frame# [100:500, 100:500]
+# frame_test = frame# [100:500, 100:500]
+# frame = cv2.imread("/Users/sonny_he/Desktop/opencv_learning/15432.jpg")
+frame_test = cv2.imread("/Users/sonny_he/Desktop/opencv_learning/vlc.jpg")
 gray_background = cv2.cvtColor(frame_test, cv2.COLOR_BGR2GRAY)
 gray_background = cv2.GaussianBlur(gray_background, (BLUR_RADIUS, BLUR_RADIUS), 0)
 pts = np.array([[0, 1080], [0, 965], [1420,300], [1755, 300], [1755, 1080], [1920, 1080]])
 # 有了背景的参考图像，开始检测物体，对每一帧转成灰度和高斯模糊
-success, frame = cap.read()
-frame = frame# [100:500, 100:500]
+# success, frame = cap.read()
+# frame = frame# [100:500, 100:500]
 mask = np.zeros((1080, 1920), dtype=np.uint8)
 # frame = cv2.flip(frame, 1)
 while success:
+    cap = cv2.VideoCapture("rtsp://192.168.9.87:8554/paosa.264")
+    success, frame = cap.read()
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray_frame = cv2.GaussianBlur(gray_frame, (BLUR_RADIUS, BLUR_RADIUS), 0)
 
@@ -52,7 +56,7 @@ while success:
     if contours:
         m = len(hier[0])
         for i in range(m):
-            if 50 <= cv2.contourArea(contours[i]) < 10000:
+            if 50 <= cv2.contourArea(contours[i]) < 8000:
                 x, y, w, h = cv2.boundingRect(contours[i])
                 # y1 = 965-0.443*x
                 # if x < 1750 & y > 300:
@@ -70,8 +74,8 @@ while success:
     if cv2.waitKey(1) == 27:  # 按下esc键退出
         break
 
-    success, frame = cap.read()
+    # success, frame = cap.read()
     # cv2.flip(frame, 1)
 
-cap.release()
+# cap.release()
 cv2.destroyAllWindows()

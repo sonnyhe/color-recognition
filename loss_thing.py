@@ -13,7 +13,8 @@ pre_hier = np.array([[[ 0, 0, 0, 0],
 # print(pre_hier[0][0])
 count = []
 # 打开摄像头
-cap = cv2.VideoCapture("/Users/sonny_he/Desktop/toss_video/cut_3.mp4")
+cap = cv2.VideoCapture("rtsp://192.168.9.87:8554/paosa.264")
+
 success, frame = cap.read()
 
 # 丢弃9帧，让相机有足够时间调整
@@ -23,14 +24,15 @@ for i in range(2):
         exit(1)
 
 # 取第十帧，并进行模糊操作，作为背景
-# frame_test = ("/Users/sonny_he/Desktop/opencv_learning/test.png")
-frame_test = frame# [100:500, 100:500]
+frame_test = cv2.imread("/Users/sonny_he/Desktop/opencv_learning/vlc.jpg")
+# frame_test = frame# [100:500, 100:500]
 gray_background = cv2.cvtColor(frame_test, cv2.COLOR_BGR2GRAY)
 gray_background = cv2.GaussianBlur(gray_background, (BLUR_RADIUS, BLUR_RADIUS), 0)
 
 # 有了背景的参考图像，开始检测物体，对每一帧转成灰度和高斯模糊
-success, frame = cap.read()
-frame = frame# [100:500, 100:500]
+# success, frame = cap.read()
+# frame = frame# [100:500, 100:500]
+# frame = ("/Users/sonny_he/Desktop/opencv_learning/13409.png")
 # frame = cv2.flip(frame, 1)
 while success:
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -78,51 +80,20 @@ while success:
         # count = np.zeros(s, dtype=int)
         # for i in range(s):
             
-    if contours:
-        if len(hier[0]) > 20:
-            print("error")
+    for contour in contours:
+        if 100 <= cv2.contourArea(contour) < 100000:
+            x, y, w, h = cv2.boundingRect(contour)
+            y1 = 965-0.443*x
+            if x < 1750 & y > 300:
+                if y > y1:
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
+                    time1 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+                # cv2.imwrite("/Users/sonny_he/Desktop/opencv_learning/save_file/%s.jpg"%time1, frame)
         else:
-            m = len(hier[0])
-            n = len(pre_hier[0])
-            if m <= n:
-                n = m
-            else:
-                m = n
-            for i in range(n):
-                # print("hier")
-                # print(len(hier[0])) 
-                # print(hier)
-                # print(hier[0][i])
-                if (pre_hier[0][i] == hier[0][i]).all():
-                         #print(len(hier[0]))
-                        print("start")
-                        # print(pre_hier[0,0])
-                        # print(hier[0,0])
-                        count[i] += 1
-                        if count[i] >= 50:
-                            if 100 <= cv2.contourArea(contours[i]) < 100000:
-                                x, y, w, h = cv2.boundingRect(contours[i])
-                                y1 = 965-0.443*x
-                                if x < 1750 & y > 300:
-                                    if y > y1:
-                                        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
-                                        time1 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-                                    # cv2.imwrite("/Users/sonny_he/Desktop/opencv_learning/save_file/%s.jpg"%time1, frame)
-                            else:
-                                    print("something is wrong")  
-                else:
-                        print("not in ")
-                        count[i] == 0
-                    # if pre_hier[i][0] in hier[...,0]:
-                            
-                    # else:
-                            # print("haha")
+                print("something is wrong")  
 
-            pre_hier = hier
 
-        
-    else:
-        count = np.zeros(25, dtype=int)
+
     
     cv2.imshow("diff", diff)
     cv2.imshow("thresh", thresh)
