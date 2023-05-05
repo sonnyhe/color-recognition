@@ -22,9 +22,11 @@ frame = cv2.imread("vlc.jpg")
 frame = cv2.line(frame, start, end, point_color, thickness, linetype)
 frame = cv2.line(frame, start1, end1, point_color, thickness, linetype)
 frame = cv2.line(frame, start2, end2, point_color, thickness, linetype)
-cv2.rectangle(frame,(1400,337),(1450,411),0,-1)   #画小矩形
-pts = np.array([[200,100],[200,500],[50,300],[500,200],[500,400]],np.int32)  #构建多边形的顶点
-cv2.fillPoly(frame,[pts],(0, 0, 0)) 
+# cv2.rectangle(frame,(1400,337),(1450,411),0,-1)   #画小矩形
+# pts = np.array([[200,100],[200,500],[50,300],[500,200],[500,400]],np.int32)  #构建多边形的顶点
+pts = np.array([[0, 1080], [0, 965], [1420,300], [1755, 300], [1755, 1080], [1920, 1080]])
+# pts1 = np.array([[360, 1080], [1316, 178], [1367, 178], [1829, 1080]])
+cv2.fillPoly(frame,[pts],255, 8,0) 
 # frame = cv2.line(frame, start3, end3, point_color, thickness, linetype)
 
 cv2.namedWindow('test')
