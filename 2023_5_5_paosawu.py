@@ -28,6 +28,7 @@ def icc_pic(img_gray, template_gray, x, y, img):
         bottom_right = (x + template_gray.shape[1], y + template_gray.shape[0])
         cv2.putText(img, text, (x +10, y +10), cv2.FONT_HERSHEY_SIMPLEX, 0.2, (255), 1)
         cv2.rectangle(img, (x,y), bottom_right, (0,0,255), 2)
+    return img
 
 def ssim_pic(img1_gray, img2_gray):
 
@@ -123,7 +124,7 @@ for i in range(n_blocks_h):
         block1 = img1[y:y+win_size, x:x+win_size]
         block2 = img_aligned[y:y+win_size, x:x+win_size]
         # 计算当前小块的相似度
-        icc_pic(block1, block2, x, y, img3)
+        img3 = icc_pic(block1, block2, x, y, img3)
 
 cv2.imshow(img3)
 cv2.waitKey(0)
